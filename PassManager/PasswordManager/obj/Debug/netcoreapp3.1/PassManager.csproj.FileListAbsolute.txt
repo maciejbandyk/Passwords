@@ -1,0 +1,4 @@
+C:\Users\Tomek\Desktop\C#\Passwords\PassManager\PasswordManager\bin\Debug\netcoreapp3.1\PassManager.deps.json
+C:\Users\Tomek\Desktop\C#\Passwords\PassManager\PasswordManager\bin\Debug\netcoreapp3.1\PassManager.dll
+C:\Users\Tomek\Desktop\C#\Passwords\PassManager\PasswordManager\obj\Debug\netcoreapp3.1\PassManager.AssemblyInfoInputs.cache
+C:\Users\Tomek\Desktop\C#\Passwords\PassManager\PasswordManager\obj\Debug\netcoreapp3.1\PassManager.AssemblyInfo.cs

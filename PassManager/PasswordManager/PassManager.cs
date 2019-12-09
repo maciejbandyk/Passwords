@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace PassManager
@@ -42,6 +44,64 @@ namespace PassManager
             catch (SqlException sE)
             {
                 Console.WriteLine(sE.ToString());
+            }
+        }
+        //method for encrypt password
+        public static string Encrypt(string key, string text)
+        {
+            ///create arrays for holding bytes
+            byte[] iv = new byte[16];
+            byte[] array;
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);  ///convert key to bytes
+                aes.IV = iv;
+                ///transformation interface gets key and iv values
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream()) ///write stream to memory
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write)) ///connect stream
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter(cryptoStream)) ///saves stream
+                        {
+                            streamWriter.Write(text);
+                        }
+                        ///put bytes into array
+                        array = memoryStream.ToArray();
+                    }
+                }
+
+            }
+            ///convert array into string
+            return Convert.ToBase64String(array);
+        }
+        ///method for decrypt password
+        public static string Decrypt(string key, string text)
+        {
+            ///create array for bytes
+            byte[] iv = new byte[16];
+            byte[] buffer = Convert.FromBase64String(text);
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key); ///convert bytes to stream
+                aes.IV = iv;
+
+                ///transformation interface gets key and iv values
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream(buffer)) ///write stream to memory
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read)) ///connect stream
+                    {
+                        using (StreamReader streamReader = new StreamReader(cryptoStream)) ///reads stream
+                        {
+                            return streamReader.ReadToEnd();
+                        }
+                    }
+                }
             }
         }
     }
